@@ -6,9 +6,18 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    Loaded="Page_Loaded"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
-
-    </Grid>
+    <StackPanel>
+        <TextBlock x:Name="tbStatus"></TextBlock>
+        <ComboBox x:Name="cbExersize">
+            <ComboBoxItem>Squat</ComboBoxItem>
+            <ComboBoxItem>Overhead Press</ComboBoxItem>
+            <ComboBoxItem>Bench Press</ComboBoxItem>
+            <ComboBoxItem>Deadlift</ComboBoxItem>
+            <ComboBoxItem>Power Clean</ComboBoxItem>
+        </ComboBox>
+        <Button x:Name="btnClickMe" Click="Button_Click">Start</Button>
+    </StackPanel>
 </Page>
