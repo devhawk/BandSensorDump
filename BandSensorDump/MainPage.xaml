@@ -31,8 +31,11 @@
             <ComboBoxItem>Power Clean</ComboBoxItem>
         </ComboBox>
         <Button x:Name="btnClickMe" Click="Button_Click" Grid.Row="2">Start</Button>
-        <ListBox x:Name="lbFiles" Grid.Row="4"></ListBox>
+        <ListView x:Name="lbFiles" Grid.Row="4" SelectionMode="Multiple"></ListView>
         <TextBlock x:Name="tbStatus" Text="Status" FontSize="16" Grid.Row="6"></TextBlock>
-        <Button x:Name="btnSendReport" Click="SendReport_Click" Grid.Row="5">Send Report</Button>
+        <StackPanel Orientation="Horizontal" Grid.Row="5">
+            <Button x:Name="btnSendReport" Click="SendReport_Click" Margin="0,0,10,0">Send Report</Button>
+            <Button x:Name="btnDeleteFiles" Click="DeleteFiles_Click">Delete Files</Button>
+        </StackPanel>
     </Grid>
 </Page>

@@ -182,6 +182,22 @@ namespace BandSensorDump
                 tbStatus.Text = $"Using Band {_bandInfo.Name}";
                 btnClickMe.IsEnabled = true;
             });
+
+            await LoadFilesAsync();
+        }
+
+        async Task LoadFilesAsync()
+        {
+            var files = await ApplicationData.Current.LocalFolder.GetFilesAsync();
+
+            await RunOnUiThread(() =>
+            {
+                lbFiles.Items.Clear();
+                foreach (var file in files)
+                {
+                    lbFiles.Items.Add(file.Name);
+                }
+            });
         }
 
         IBandClient _band;
@@ -240,7 +256,7 @@ namespace BandSensorDump
             sensorMgr.Distance.ReadingChanged += Distance_ReadingChanged;
             sensorMgr.Gyroscope.ReadingChanged += Gyroscope_ReadingChanged;
             sensorMgr.HeartRate.ReadingChanged += HeartRate_ReadingChanged;
-            sensorMgr.SkinTemperature.ReadingChanged += SkinTemperature_ReadingChanged; 
+            sensorMgr.SkinTemperature.ReadingChanged += SkinTemperature_ReadingChanged;
         }
 
         void RemoveEventHandlers()
@@ -466,26 +482,44 @@ namespace BandSensorDump
 
         private async void SendReport_Click(object sender, RoutedEventArgs e)
         {
-            await SendReportAsync();
+            var files = lbFiles.SelectedItems.Select(o => o.ToString()).ToArray();
+            await SendReportAsync(files);
         }
 
-        async Task SendReportAsync()
+        async Task SendReportAsync(string[] files)
         {
-            var attachments = _files.Select(f =>
-            {
-                var rasr = RandomAccessStreamReference.CreateFromFile(f);
-                return new EmailAttachment(f.Name, rasr);
-            });
+            var localFolder = ApplicationData.Current.LocalFolder;
 
             var em = new EmailMessage();
             em.To.Add(new EmailRecipient("harrypierson@outlook.com"));
             em.Subject = $"{DateTimeOffset.Now.ToString("d")} Workout";
-            foreach (var a in attachments)
+
+            foreach (var filename in files)
             {
-                em.Attachments.Add(a);
+                var file = await localFolder.GetFileAsync(filename);
+                var rasr = RandomAccessStreamReference.CreateFromFile(file);
+                em.Attachments.Add(new EmailAttachment(file.Name, rasr));
             }
 
             await EmailManager.ShowComposeNewEmailAsync(em);
+        }
+
+        async void DeleteFiles_Click(object sender, RoutedEventArgs e)
+        {
+            var files = lbFiles.SelectedItems.Select(o => o.ToString()).ToArray();
+            await DeleteFilesAsync(files);
+        }
+
+        async Task DeleteFilesAsync(string[] files)
+        {
+            var localFolder = ApplicationData.Current.LocalFolder;
+            foreach (var filename in files)
+            {
+                var file = await localFolder.GetFileAsync(filename);
+                await file.DeleteAsync();
+            }
+
+            await LoadFilesAsync();
         }
     }
 }
