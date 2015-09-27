@@ -334,22 +334,29 @@ namespace BandSensorDump
             _band.Dispose();
             _band = null;
 
+            string exercise = null;
+            await RunOnUiThread(() => exercise = (cbExersize.SelectedItem as ComboBoxItem)?.Content.ToString());
             await UpdateStatusAsync($"Collected {_accelerometerData.Count} accelerometer readings");
-            await SaveDataAsync();
+
+            await SaveDataAsync(exercise);
 
             cbExersize.IsEnabled = true;
             btnClickMe.Content = "Start Collection";
             btnClickMe.IsEnabled = true;
         }
 
-        async Task SaveDataAsync()
-        {
-            string exercise = null;
-            await RunOnUiThread(() => exercise = (cbExersize.SelectedItem as ComboBoxItem)?.Content.ToString());
+        List<StorageFile> _files = new List<StorageFile>();
 
-            var imras = new InMemoryRandomAccessStream();
-            StreamWriter sw = new StreamWriter(imras.AsStreamForWrite(), System.Text.Encoding.UTF8);
-            JsonWriter jsonWriter = new JsonTextWriter(sw);
+        async Task SaveDataAsync(string exercise)
+        {
+            exercise = string.IsNullOrEmpty(exercise) ? "Unknown" : exercise;
+            var filename = $"{exercise}-{DateTimeOffset.Now.ToString("yyyyMMdd")}.json";
+
+            var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(filename, CreationCollisionOption.GenerateUniqueName);
+
+            using (var stream = await file.OpenStreamForWriteAsync())
+            using (var sw = new StreamWriter(stream, System.Text.Encoding.UTF8))
+            using (var jsonWriter = new JsonTextWriter(sw))
             {
                 jsonWriter.WriteStartObject();
 
@@ -450,20 +457,33 @@ namespace BandSensorDump
                 }
                 jsonWriter.WriteEndArray();
 
-
                 jsonWriter.WriteEndObject();
             }
 
-            jsonWriter.Flush();
+            _files.Add(file);
+            lbFiles.Items.Add(file.Name);
+        }
 
+        private async void SendReport_Click(object sender, RoutedEventArgs e)
+        {
+            await SendReportAsync();
+        }
 
-            var rasr = RandomAccessStreamReference.CreateFromStream(imras);
-            var attach = new EmailAttachment("filename.json", rasr);
+        async Task SendReportAsync()
+        {
+            var attachments = _files.Select(f =>
+            {
+                var rasr = RandomAccessStreamReference.CreateFromFile(f);
+                return new EmailAttachment(f.Name, rasr);
+            });
+
             var em = new EmailMessage();
             em.To.Add(new EmailRecipient("harrypierson@outlook.com"));
-            em.Subject = exercise + DateTimeOffset.Now.ToString(" yyyyMMdd");
-            em.Body = "this is a test";
-            em.Attachments.Add(attach);
+            em.Subject = $"{DateTimeOffset.Now.ToString("d")} Workout";
+            foreach (var a in attachments)
+            {
+                em.Attachments.Add(a);
+            }
 
             await EmailManager.ShowComposeNewEmailAsync(em);
         }
