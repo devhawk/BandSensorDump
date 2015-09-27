@@ -1,18 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
@@ -45,6 +35,7 @@ namespace BandSensorDump
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
+            App.Current.UnhandledException += Current_UnhandledException;
 #if DEBUG
             this.DebugSettings.EnableFrameRateCounter |= System.Diagnostics.Debugger.IsAttached;
 #endif
@@ -99,6 +90,12 @@ namespace BandSensorDump
 
             // Ensure the current window is active
             Window.Current.Activate();
+        }
+
+        private void Current_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var msgbox = new Windows.UI.Popups.MessageDialog(e.Message);
+            msgbox.ShowAsync().AsTask().Wait();
         }
 
         /// <summary>

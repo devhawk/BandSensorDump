@@ -2,21 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using System.Threading.Tasks;
 using Microsoft.Band;
 using Microsoft.Band.Sensors;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
+using Windows.Storage;
+using Windows.Storage.Search;
+using Windows.ApplicationModel.Email;
+using Windows.Storage.Streams;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -344,7 +340,6 @@ namespace BandSensorDump
             cbExersize.IsEnabled = true;
             btnClickMe.Content = "Start Collection";
             btnClickMe.IsEnabled = true;
-
         }
 
         async Task SaveDataAsync()
@@ -352,9 +347,9 @@ namespace BandSensorDump
             string exercise = null;
             await RunOnUiThread(() => exercise = (cbExersize.SelectedItem as ComboBoxItem)?.Content.ToString());
 
-            var sb = new System.Text.StringBuilder();
-            using (StringWriter sw = new StringWriter(sb))
-            using (JsonWriter jsonWriter = new JsonTextWriter(sw))
+            var imras = new InMemoryRandomAccessStream();
+            StreamWriter sw = new StreamWriter(imras.AsStreamForWrite(), System.Text.Encoding.UTF8);
+            JsonWriter jsonWriter = new JsonTextWriter(sw);
             {
                 jsonWriter.WriteStartObject();
 
@@ -459,8 +454,18 @@ namespace BandSensorDump
                 jsonWriter.WriteEndObject();
             }
 
-            var txt = sb.ToString();
-            ;
+            jsonWriter.Flush();
+
+
+            var rasr = RandomAccessStreamReference.CreateFromStream(imras);
+            var attach = new EmailAttachment("filename.json", rasr);
+            var em = new EmailMessage();
+            em.To.Add(new EmailRecipient("harrypierson@outlook.com"));
+            em.Subject = exercise + DateTimeOffset.Now.ToString(" yyyyMMdd");
+            em.Body = "this is a test";
+            em.Attachments.Add(attach);
+
+            await EmailManager.ShowComposeNewEmailAsync(em);
         }
     }
 }
