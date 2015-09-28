@@ -391,7 +391,7 @@ namespace BandSensorDump
                     jsonWriter.WritePropertyName("AccelerationZ");
                     jsonWriter.WriteValue(a.AccelerationZ);
                     jsonWriter.WritePropertyName("Timestamp");
-                    jsonWriter.WriteValue(a.Timestamp.Ticks);
+                    jsonWriter.WriteValue(a.Timestamp.Ticks.ToString());
                     jsonWriter.WriteEndObject();
                 }
                 jsonWriter.WriteEndArray();
@@ -404,7 +404,7 @@ namespace BandSensorDump
                     jsonWriter.WritePropertyName("Calories");
                     jsonWriter.WriteValue(a.Calories);
                     jsonWriter.WritePropertyName("Timestamp");
-                    jsonWriter.WriteValue(a.Timestamp.Ticks);
+                    jsonWriter.WriteValue(a.Timestamp.Ticks.ToString());
                     jsonWriter.WriteEndObject();
                 }
                 jsonWriter.WriteEndArray();
@@ -423,7 +423,7 @@ namespace BandSensorDump
                     jsonWriter.WritePropertyName("Pace");
                     jsonWriter.WriteValue(a.Pace);
                     jsonWriter.WritePropertyName("Timestamp");
-                    jsonWriter.WriteValue(a.Timestamp.Ticks);
+                    jsonWriter.WriteValue(a.Timestamp.Ticks.ToString());
                     jsonWriter.WriteEndObject();
                 }
                 jsonWriter.WriteEndArray();
@@ -440,7 +440,7 @@ namespace BandSensorDump
                     jsonWriter.WritePropertyName("AngularVelocityZ");
                     jsonWriter.WriteValue(a.AngularVelocityZ);
                     jsonWriter.WritePropertyName("Timestamp");
-                    jsonWriter.WriteValue(a.Timestamp.Ticks);
+                    jsonWriter.WriteValue(a.Timestamp.Ticks.ToString());
                     jsonWriter.WriteEndObject();
                 }
                 jsonWriter.WriteEndArray();
@@ -455,7 +455,7 @@ namespace BandSensorDump
                     jsonWriter.WritePropertyName("Quality");
                     jsonWriter.WriteValue(a.Quality);
                     jsonWriter.WritePropertyName("Timestamp");
-                    jsonWriter.WriteValue(a.Timestamp.Ticks);
+                    jsonWriter.WriteValue(a.Timestamp.Ticks.ToString());
                     jsonWriter.WriteEndObject();
                 }
                 jsonWriter.WriteEndArray();
@@ -468,7 +468,7 @@ namespace BandSensorDump
                     jsonWriter.WritePropertyName("Temperature");
                     jsonWriter.WriteValue(a.Temperature);
                     jsonWriter.WritePropertyName("Timestamp");
-                    jsonWriter.WriteValue(a.Timestamp.Ticks);
+                    jsonWriter.WriteValue(a.Timestamp.Ticks.ToString());
                     jsonWriter.WriteEndObject();
                 }
                 jsonWriter.WriteEndArray();
