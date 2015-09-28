@@ -9,33 +9,48 @@
     Loaded="Page_Loaded"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.BottomAppBar>
+        <CommandBar>
+            <CommandBar.PrimaryCommands>
+                <AppBarButton Icon="Send" Label="Send" Click="SendReport_Click"/>
+                <AppBarButton Icon="Delete" Label="Delete" Click="DeleteFiles_Click"/>
+            </CommandBar.PrimaryCommands>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="Select All" Click="SelectAll_Click"/>
+                <AppBarButton Label="Unselect All" Click="UnselectAll_Click"/>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        
         <StackPanel Margin="0,0,0,20" Grid.Row="0">
             <TextBlock Text="Band Sensor Dump" FontSize="32"></TextBlock>
             <TextBlock Text="Data Collection" FontSize="56"></TextBlock>
         </StackPanel>
-        <ComboBox x:Name="cbExersize" FontSize="21.333" PlaceholderText="choose a workout" Grid.Row="1">
-            <ComboBoxItem>Squat</ComboBoxItem>
-            <ComboBoxItem>Overhead Press</ComboBoxItem>
-            <ComboBoxItem>Bench Press</ComboBoxItem>
-            <ComboBoxItem>Deadlift</ComboBoxItem>
-            <ComboBoxItem>Power Clean</ComboBoxItem>
-        </ComboBox>
-        <Button x:Name="btnClickMe" Click="Button_Click" Grid.Row="2">Start</Button>
-        <ListView x:Name="lbFiles" Grid.Row="4" SelectionMode="Multiple"></ListView>
-        <TextBlock x:Name="tbStatus" Text="Status" FontSize="16" Grid.Row="6"></TextBlock>
-        <StackPanel Orientation="Horizontal" Grid.Row="5">
-            <Button x:Name="btnSendReport" Click="SendReport_Click" Margin="0,0,10,0">Send Report</Button>
-            <Button x:Name="btnDeleteFiles" Click="DeleteFiles_Click">Delete Files</Button>
-        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <ComboBox x:Name="cbExersize" FontSize="21.333" PlaceholderText="choose a workout" Margin="0,0,10,0">
+                <ComboBoxItem>Squat</ComboBoxItem>
+                <ComboBoxItem>Overhead Press</ComboBoxItem>
+                <ComboBoxItem>Bench Press</ComboBoxItem>
+                <ComboBoxItem>Deadlift</ComboBoxItem>
+                <ComboBoxItem>Power Clean</ComboBoxItem>
+            </ComboBox>
+            <Button x:Name="btnClickMe" Click="Button_Click" Grid.Column="1">Start</Button>
+        </Grid>
+
+        <ListView x:Name="lbFiles" Grid.Row="2" SelectionMode="Multiple"></ListView>
+        
+        <TextBlock x:Name="tbStatus" Text="Status" FontSize="16" Grid.Row="3"></TextBlock>
     </Grid>
 </Page>

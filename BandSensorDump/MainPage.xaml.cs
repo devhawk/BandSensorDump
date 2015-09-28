@@ -521,6 +521,16 @@ namespace BandSensorDump
 
             await LoadFilesAsync();
         }
+
+        void SelectAll_Click(object sender, RoutedEventArgs e)
+        {
+            lbFiles.SelectAll();
+        }
+
+        void UnselectAll_Click(object sender, RoutedEventArgs e)
+        {
+            lbFiles.SelectedItems.Clear();
+        }
     }
 }
 
